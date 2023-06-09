@@ -81,11 +81,10 @@ class Asg:public Pessoa, public Funcionario {
     float getAdicionalInsalubridade() { return this->adicionalInsalubridade; }
     void setAdicionalInsalubridade(float adicional) { this->adicionalInsalubridade=adicional; }
     float calcularSalario() {
-        int diasFaltas=getFaltas();
         float salario=stof(getSalario());
-        salario-=(salario/30)*diasFaltas;
-        salario*=adicionalInsalubridade;
-        salario+=getQtdFilhos()*100;
+        salario-=(salario/30)*getFaltas();
+        salario=salario*(1+adicionalInsalubridade);
+        salario=salario+getQtdFilhos()*100;
         return salario;
     }
     float calcularRecisao(Data desligamento) {
@@ -328,6 +327,9 @@ void Empresa::carregarEmpresa() {
         cout<<"Arquivo não pôde ser aberto!"<<endl;
         return;
     }
+
+    getline(file, linha);
+    getline(file, linha);
 
     getline(file, linha);
     setNomeEmpresa(linha);
@@ -574,12 +576,13 @@ void Empresa::imprimeAsgs() {
         cout<<"Nome: "<<i.getNome()<<endl;
         cout<<"CPF: "<<i.getCpf()<<endl;
         cout<<"Data de nascimento: "<<i.getDataNascimento().dia<<"/"<<i.getDataNascimento().mes<<"/"<<i.getDataNascimento().ano<<endl;
-        cout<<"Endereço: "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
+        cout<<"Endereço: Rua "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
         cout<<"Estado civil: "<<i.getEstadoCivil()<<endl;
         cout<<"Número de filhos: "<<i.getQtdFilhos()<<endl;
-        cout<<"Salário: "<<i.getSalario()<<endl;
+        cout<<"Salário: "<<i.calcularSalario()<<endl;
+        cout<<"Número de faltas: "<<i.getFaltas()<<endl;
         cout<<"Matrícula: "<<i.getMatricula()<<endl;
-        cout<<"Data de nascimento: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
+        cout<<"Data de ingresso na empresa: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
         cout<<"**********************************"<<endl;
     }
 }
@@ -590,12 +593,13 @@ void Empresa::imprimeVendedores() {
         cout<<"Nome: "<<i.getNome()<<endl;
         cout<<"CPF: "<<i.getCpf()<<endl;
         cout<<"Data de nascimento: "<<i.getDataNascimento().dia<<"/"<<i.getDataNascimento().mes<<"/"<<i.getDataNascimento().ano<<endl;
-        cout<<"Endereço: "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
+        cout<<"Endereço: Rua "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
         cout<<"Estado civil: "<<i.getEstadoCivil()<<endl;
         cout<<"Número de filhos: "<<i.getQtdFilhos()<<endl;
-        cout<<"Salário: "<<i.getSalario()<<endl;
+        cout<<"Salário: "<<i.calcularSalario()<<endl;
+        cout<<"Número de faltas: "<<i.getFaltas()<<endl;
         cout<<"Matrícula: "<<i.getMatricula()<<endl;
-        cout<<"Data de nascimento: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
+        cout<<"Data de ingresso na empresa: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
         cout<<"**********************************"<<endl;
     }
 }
@@ -606,12 +610,13 @@ void Empresa::imprimeGerentes() {
         cout<<"Nome: "<<i.getNome()<<endl;
         cout<<"CPF: "<<i.getCpf()<<endl;
         cout<<"Data de nascimento: "<<i.getDataNascimento().dia<<"/"<<i.getDataNascimento().mes<<"/"<<i.getDataNascimento().ano<<endl;
-        cout<<"Endereço: "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
+        cout<<"Endereço: Rua "<<i.getEnderecoPessoal().rua<<", "<<i.getEnderecoPessoal().numero<<endl;
         cout<<"Estado civil: "<<i.getEstadoCivil()<<endl;
         cout<<"Número de filhos: "<<i.getQtdFilhos()<<endl;
-        cout<<"Salário: "<<i.getSalario()<<endl;
+        cout<<"Salário: "<<i.calcularSalario()<<endl;
+        cout<<"Número de faltas: "<<i.getFaltas()<<endl;
         cout<<"Matrícula: "<<i.getMatricula()<<endl;
-        cout<<"Data de nascimento: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
+        cout<<"Data de ingresso na empresa: "<<i.getIngressoEmpresa().dia<<"/"<<i.getIngressoEmpresa().mes<<"/"<<i.getIngressoEmpresa().ano<<endl;
         cout<<"**********************************"<<endl;
     }
 }
@@ -621,7 +626,7 @@ void Empresa::imprimeDono() {
     cout<<"Nome: "<<dono.getNome()<<endl;
     cout<<"CPF: "<<dono.getCpf()<<endl;
     cout<<"Data de nascimento: "<<dono.getDataNascimento().dia<<"/"<<dono.getDataNascimento().mes<<"/"<<dono.getDataNascimento().ano<<endl;
-    cout<<"Endereço: "<<dono.getEnderecoPessoal().rua<<", "<<dono.getEnderecoPessoal().numero<<endl;
+    cout<<"Endereço: Rua "<<dono.getEnderecoPessoal().rua<<", "<<dono.getEnderecoPessoal().numero<<endl;
     cout<<"Estado civil: "<<dono.getEstadoCivil()<<endl;
     cout<<"Número de filhos: "<<dono.getQtdFilhos()<<endl;
 }
@@ -650,22 +655,26 @@ bool Empresa::buscaFuncionario(int matricula) {
 }
 
 float Empresa::calculaSalarioFuncionario(int matricula) {
-    if(buscaFuncionario(matricula)==false) {
-        cout<<"Funcionário não encontrado no sistema!"<<endl;
-        return 0;
-    }
     for(auto i:asgs) {
-        if(stoi(i.getMatricula())==matricula) 
-            return stof(i.getSalario());
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"O salário do funcionário é: "<<i.calcularSalario()<<endl;
+            return i.calcularSalario();
+        }
     }
     for(auto i:vendedores) {
-        if(stoi(i.getMatricula())==matricula) 
-            return stof(i.getSalario());
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"O salário do funcionário é: "<<i.calcularSalario()<<endl;
+            return i.calcularSalario();
+        }
     }
     for(auto i:gerentes) {
-        if(stoi(i.getMatricula())==matricula) 
-            return stof(i.getSalario());
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"O salário do funcionário é: "<<i.calcularSalario()<<endl;
+            return i.calcularSalario();
+        }
     }
+    cout<<"Funcionário não encontrado no sistema!"<<endl;
+    return -1;
 }
 
 void Empresa::calculaTodosOsSalarios() {
@@ -735,22 +744,26 @@ void Empresa::calculaTodosOsSalarios() {
 }
 
 float Empresa::calcularRecisao(int matricula, Data desligamento) {
-    if(buscaFuncionario(matricula)==false) {
-        cout<<"Funcionário não encontrado no sistema!"<<endl;
-        return 0;
-    }
     for(auto i:asgs) {
-        if(stoi(i.getMatricula())==matricula) 
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"A recisão do funcionário é: "<<i.calcularRecisao(desligamento)<<endl;
             return i.calcularRecisao(desligamento);
+        }
     }
     for(auto i:vendedores) {
-        if(stoi(i.getMatricula())==matricula) 
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"A recisão do funcionário é: "<<i.calcularRecisao(desligamento)<<endl;
             return i.calcularRecisao(desligamento);
+        }
     }
     for(auto i:gerentes) {
-        if(stoi(i.getMatricula())==matricula) 
+        if(stoi(i.getMatricula())==matricula) {
+            cout<<"A recisão do funcionário é: "<<i.calcularRecisao(desligamento)<<endl;
             return i.calcularRecisao(desligamento);
+        }
     }
+    cout<<"Funcionário não encontrado no sistema!"<<endl;
+    return -1;
 }
 
 int main() {

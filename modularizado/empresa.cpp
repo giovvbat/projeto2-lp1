@@ -1,223 +1,31 @@
 #include <iostream>
 #include "util.hpp"
+#include "pessoa.hpp"
+#include "asg.hpp"
+#include "gerente.hpp"
+#include "vendedor.hpp"
+#include "empresa.hpp"
 #include <fstream>
 #include <vector>
-#include <string>
+
 using namespace std;
 
-class Pessoa {
-    private:
-    string nome;
-    string cpf;
-    Data dataNascimento;
-    Endereco enderecoPessoal;
-    string estadoCivil;
-    int qtdFilhos;
+Empresa::Empresa() {}
+Empresa::Empresa(string nome, string cnpj, float faturamento) {
+    this->cnpj=cnpj;
+    this->faturamentoMensal=faturamento;
+    this->nomeEmpresa=nome;
+}
+float Empresa::getFaturamentoMensal() { return this->faturamentoMensal; }
+void Empresa::setFaturamentoMensal(float faturamento) { this->faturamentoMensal=faturamento; }
+string Empresa::getNomeEmpresa() { return this->nomeEmpresa; }
+void Empresa::setNomeEmpresa(string nome) { this->nomeEmpresa=nome; }
+string Empresa::getCnpj() { return this->cnpj; }
+void Empresa::setCnpj(string cnpj) { this->cnpj=cnpj; }
+vector<Asg> Empresa::getAsgs() { return this->asgs; }
+vector<Vendedor> Empresa::getVendedores() { return this->vendedores; }
+vector<Gerente> Empresa::getGerentes() { return this->gerentes; }
 
-    public:
-    Pessoa() {}
-    Pessoa(string nome, string cpf, Data dataNascimento, Endereco enderecoPessoal, string estadociv, int qtdFilhos) {
-        this->nome=nome;
-        this->cpf=cpf;
-        this->dataNascimento=dataNascimento;
-        this->enderecoPessoal=enderecoPessoal;
-        this->estadoCivil=estadociv;
-        this->qtdFilhos=qtdFilhos;
-    }
-
-    string getNome() { return this->nome; }
-    void setNome(string nome) { this->nome=nome; }
-    string getCpf() { return this->cpf; }
-    void setCpf(string cpf) { this->cpf=cpf; }
-    Data getDataNascimento() { return this->dataNascimento; }
-    void setDataNascimento(Data dataNascimento) { this->dataNascimento=dataNascimento; }
-    Endereco getEnderecoPessoal() { return this->enderecoPessoal; }
-    void setEnderecoPessoal(Endereco enderecoPessoal) { this->enderecoPessoal=enderecoPessoal; }
-    string getEstadoCivil() { return this->estadoCivil; }
-    void setEstadoCivil(string estadoCivil) { this->estadoCivil=estadoCivil; }
-    int getQtdFilhos() { return this->qtdFilhos; }
-    void setQtdFilhos(int qtdFilhos) { this->qtdFilhos=qtdFilhos; }
-};
-
-class Funcionario {
-    private:
-    string salario;
-    string matricula;
-    Data ingressoEmpresa;
-    int faltas;
-
-    public:
-    string getSalario() { return this->salario; }
-    void setSalario(string salario) { this->salario=salario; }
-    string getMatricula() { return this->matricula; }
-    void setMatricula(string matricula) { this->matricula=matricula; }
-    Data getIngressoEmpresa() { return this->ingressoEmpresa; }
-    void setIngressoEmpresa(Data ingressoEmpresa) { this->ingressoEmpresa=ingressoEmpresa; }
-    int getFaltas() { return this->faltas; }
-    void setFaltas(int diasfaltas) { this->faltas=diasfaltas; }
-    virtual float calcularSalario()=0;
-    virtual float calcularRecisao(Data desligamento)=0;
-};
-
-class Asg:public Pessoa, public Funcionario {
-    private:
-    float adicionalInsalubridade;
-
-    public:
-    Asg() {}
-    Asg(string nome, string cpf, Data nasc, Endereco end, string estadocivil, int filhos, string salario, string matr, Data ingresso, int faltas, float adicional) {
-        setNome(nome);
-        setCpf(cpf);
-        setDataNascimento(nasc);
-        setEnderecoPessoal(end);
-        setEstadoCivil(estadocivil);
-        setQtdFilhos(filhos);
-        setSalario(salario);
-        setMatricula(matr);
-        setIngressoEmpresa(ingresso);
-        setFaltas(faltas);
-        this->adicionalInsalubridade=adicional; 
-    }
-    float getAdicionalInsalubridade() { return this->adicionalInsalubridade; }
-    void setAdicionalInsalubridade(float adicional) { this->adicionalInsalubridade=adicional; }
-    float calcularSalario() {
-        float salario=stof(getSalario());
-        salario-=(salario/30)*getFaltas();
-        salario=salario*(1+adicionalInsalubridade);
-        salario=salario+getQtdFilhos()*100;
-        return salario;
-    }
-    float calcularRecisao(Data desligamento) {
-        float desligamentodias, ingressodias;
-        ingressodias=getIngressoEmpresa().ano*365+(getIngressoEmpresa().mes)*30+getIngressoEmpresa().dia;
-        desligamentodias=desligamento.ano*365+desligamento.mes*30+desligamento.dia;
-        float diferencaano=(desligamentodias-ingressodias)/365;
-        float adicional=stof(getSalario())*diferencaano;
-        return adicional;
-    }
-};
-
-class Vendedor:public Pessoa, public Funcionario {
-    private:
-    char tipoVendedor;
-
-    public:
-    Vendedor() {}
-    Vendedor(string nome, string cpf, Data nasc, Endereco end, string estadocivil, int filhos, string salario, string matr, Data ingresso, int faltas, char tipo) {
-        setNome(nome);
-        setCpf(cpf);
-        setDataNascimento(nasc);
-        setEnderecoPessoal(end);
-        setEstadoCivil(estadocivil);
-        setQtdFilhos(filhos);
-        setSalario(salario);
-        setMatricula(matr);
-        setIngressoEmpresa(ingresso);
-        setFaltas(faltas);
-        this->tipoVendedor=tipo;
-    }
-    char getTipoVendedor() { return this->tipoVendedor; }
-    void setTipoVendedor(char tipo) { this->tipoVendedor=tipo; }
-    float calcularSalario() {
-        int diasFaltas=getFaltas();
-        float salario=stof(getSalario());
-        salario-=(salario/30)*diasFaltas;
-        if(tipoVendedor=='A')
-            salario*=1.25;
-        else if(tipoVendedor=='B')
-            salario*=1.1;
-        else if(tipoVendedor=='C')
-            salario*=1.05;
-        salario+=getQtdFilhos()*100;
-        return salario;
-    }
-    float calcularRecisao(Data desligamento) {
-        float desligamentodias, ingressodias;
-        ingressodias=getIngressoEmpresa().ano*365+(getIngressoEmpresa().mes)*30+getIngressoEmpresa().dia;
-        desligamentodias=desligamento.ano*365+desligamento.mes*30+desligamento.dia;
-        float diferencaano=(desligamentodias-ingressodias)/365;
-        float adicional=stof(getSalario())*diferencaano;
-        return adicional;
-    }
-};
-
-class Gerente:public Pessoa, public Funcionario {
-    private:
-    float participacaoLucros;
-
-    public:
-    Gerente() {}
-    Gerente(string nome, string cpf, Data nasc, Endereco end, string estadocivil, int filhos, string salario, string matr, Data ingresso, int faltas, float lucro) {
-        setNome(nome);
-        setCpf(cpf);
-        setDataNascimento(nasc);
-        setEnderecoPessoal(end);
-        setEstadoCivil(estadocivil);
-        setQtdFilhos(filhos);
-        setSalario(salario);
-        setMatricula(matr);
-        setIngressoEmpresa(ingresso);
-        setFaltas(faltas);
-        this->participacaoLucros=lucro;
-    }
-    float getParticipacaoLucros() { return this->participacaoLucros; }
-    void setParticipacaoLucros(float lucro) { this->participacaoLucros=lucro; }
-    float calcularSalario() {
-        int diasfaltas=getFaltas();
-        float salario=stof(getSalario());
-        salario-=(salario/30)*diasfaltas;
-        salario+=participacaoLucros;
-        salario+=getQtdFilhos()*100;
-        return salario;
-    }
-    float calcularRecisao(Data desligamento) {
-        float desligamentodias, ingressodias;
-        ingressodias=getIngressoEmpresa().ano*365+(getIngressoEmpresa().mes)*30+getIngressoEmpresa().dia;
-        desligamentodias=desligamento.ano*365+desligamento.mes*30+desligamento.dia;
-        float diferencaano=(desligamentodias-ingressodias)/365;
-        float adicional=stof(getSalario())*diferencaano;
-        return adicional;
-    }
-};
-
-class Empresa {
-    private:
-    float faturamentoMensal;
-    string nomeEmpresa;
-    string cnpj;
-    Pessoa dono;
-    vector<Asg> asgs;
-    vector<Vendedor> vendedores;
-    vector<Gerente> gerentes;
-
-    public:
-    Empresa() {}
-    Empresa(string nome, string cnpj, float faturamento) {
-        this->cnpj=cnpj;
-        this->faturamentoMensal=faturamento;
-        this->nomeEmpresa=nome;
-    }
-    float getFaturamentoMensal() { return this->faturamentoMensal; }
-    void setFaturamentoMensal(float faturamento) { this->faturamentoMensal=faturamento; }
-    string getNomeEmpresa() { return this->nomeEmpresa; }
-    void setNomeEmpresa(string nome) { this->nomeEmpresa=nome; }
-    string getCnpj() { return this->cnpj; }
-    void setCnpj(string cnpj) { this->cnpj=cnpj; }
-    void carregarFuncoes();
-    void carregarEmpresa();
-    void carregarAsg();
-    void carregaDono();
-    void carregarVendedor();
-    void carregarGerente();
-    void imprimeAsgs();
-    void imprimeVendedores();
-    void imprimeGerentes();
-    void imprimeDono();
-    bool buscaFuncionario(string matricula);
-    float calculaSalarioFuncionario(string matricula);
-    void calculaTodosOsSalarios();
-    float calcularRecisao(string matricula, Data desligamento);
-};
 
 void Empresa::carregarFuncoes() {
     ifstream file("funcoes.txt");
@@ -765,13 +573,3 @@ float Empresa::calcularRecisao(string matricula, Data desligamento) {
     cout<<"Funcionário não encontrado no sistema!"<<endl;
     return -1;
 }
-
-int main() {
-    Empresa *atacadoDosCalcados=new Empresa("Atacado dos Calçados", "40.101.588/0001-98", 156289.56);
-    atacadoDosCalcados->carregarFuncoes();
-}
-
-/*gets extras*/
-/*testar*/
-/*modularizar*/
-/*testar*/

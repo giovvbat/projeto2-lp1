@@ -1,23 +1,12 @@
 #include <iostream>
 #include "asg.hpp"
+#include "util.hpp"
 #include "funcionario.hpp"
 #include "pessoa.hpp"
 using namespace std;
 
 Asg::Asg() {}
-Asg::Asg(string nome, string cpf, Data nasc, Endereco end, string estadocivil, int filhos, string salario, string matr, Data ingresso, int faltas, float adicional) {
-        setNome(nome);
-        setCpf(cpf);
-        setDataNascimento(nasc);
-        setEnderecoPessoal(end);
-        setEstadoCivil(estadocivil);
-        setQtdFilhos(filhos);
-        setSalario(salario);
-        setMatricula(matr);
-        setIngressoEmpresa(ingresso);
-        setFaltas(faltas);
-        this->adicionalInsalubridade=adicional; 
-}
+Asg::Asg(float adicional) { this->adicionalInsalubridade=adicional; }
 float Asg::getAdicionalInsalubridade() { return this->adicionalInsalubridade; }
 void Asg::setAdicionalInsalubridade(float adicional) { this->adicionalInsalubridade=adicional; }
 float Asg::calcularSalario() {

@@ -3,6 +3,7 @@
 #include "funcionario.hpp"
 using namespace std;
 
+/*implementação dos métodos get/set*/
 string Funcionario::getSalario() { return this->salario; }
 void Funcionario::setSalario(string salario) { this->salario=salario; }
 string Funcionario::getMatricula() { return this->matricula; }

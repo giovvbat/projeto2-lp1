@@ -8,12 +8,16 @@
 using namespace std;
 
 class Asg:public Pessoa, public Funcionario {
+    /*criando a classe Asg com herança de Pessoa e Funcionario*/
     private:
     float adicionalInsalubridade;
 
     public:
+    /*construtores*/
     Asg();
-    Asg(string nome, string cpf, Data nasc, Endereco end, string estadocivil, int filhos, string salario, string matr, Data ingresso, int faltas, float adicional);
+    Asg(float adicional);
+
+    /*métodos get/set*/
     float getAdicionalInsalubridade();
     void setAdicionalInsalubridade(float adicional);
     float calcularSalario();

@@ -5,6 +5,7 @@
 using namespace std;
 
 class Pessoa {
+    /*criando a classe Pessoa*/
     private:
     string nome;
     string cpf;
@@ -14,9 +15,11 @@ class Pessoa {
     int qtdFilhos;
 
     public:
+    /*construtores*/
     Pessoa();
     Pessoa(string nome, string cpf, Data dataNascimento, Endereco enderecoPessoal, string estadociv, int qtdFilhos);
 
+    /*métodos get/set*/
     string getNome();
     void setNome(string nome);
     string getCpf();

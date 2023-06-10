@@ -3,7 +3,9 @@
 #include "pessoa.hpp"
 using namespace std;
 
+/*construtor sem parâmetro*/
 Pessoa::Pessoa() {}
+/*construtor parametrizado*/
 Pessoa::Pessoa(string nome, string cpf, Data dataNascimento, Endereco enderecoPessoal, string estadociv, int qtdFilhos) {
     this->nome=nome;
     this->cpf=cpf;
@@ -13,6 +15,7 @@ Pessoa::Pessoa(string nome, string cpf, Data dataNascimento, Endereco enderecoPe
     this->qtdFilhos=qtdFilhos;
 }
 
+/*métodos get/set implementados*/
 string Pessoa::getNome() { return this->nome; }
 void Pessoa::setNome(string nome) { this->nome=nome; }
 string Pessoa::getCpf() { return this->cpf; }

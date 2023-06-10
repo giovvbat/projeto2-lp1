@@ -5,6 +5,7 @@
 using namespace std;
 
 class Funcionario {
+    /*criando a classe abstrata Funcionário*/
     private:
     string salario;
     string matricula;
@@ -12,6 +13,7 @@ class Funcionario {
     int faltas;
 
     public:
+    /*métodos get/set e as funções virtuais*/
     string getSalario();
     void setSalario(string salario);
     string getMatricula();
